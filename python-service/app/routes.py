@@ -5,6 +5,18 @@ import traceback
 bp = Blueprint('api', __name__)
 analysis_service = AnalysisService()
 
+@bp.route('/')  
+def root():
+    """Root endpoint for basic connectivity check"""
+    return jsonify({
+        'success': True,
+        'message': 'Bioinformatics Python Analysis Service',
+        'version': '1.0.0',
+        'status': 'online',
+        'endpoints': ['/health', '/stats', '/correlation', '/differential', '/clustering']
+    })
+
+
 @bp.route('/health', methods=['GET'])
 def health_check():
     """Health check endpoint"""
