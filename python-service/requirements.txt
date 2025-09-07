@@ -1,0 +1,7 @@
+Flask
+flask-cors
+pandas==2.2.3
+numpy
+scipy
+scikit-learn
+gunicorn

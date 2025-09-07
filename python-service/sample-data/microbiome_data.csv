@@ -1,0 +1,16 @@
+sample_id,condition,Bacteroides,Firmicutes,Proteobacteria,Actinobacteria,Verrucomicrobia,Fusobacteria,Cyanobacteria
+sample_mb_001,healthy,35.2,42.1,12.3,6.8,2.1,1.2,0.3
+sample_mb_002,healthy,37.8,39.5,13.1,7.2,1.8,0.9,0.4
+sample_mb_003,healthy,33.9,44.2,11.8,6.5,2.3,1.1,0.2
+sample_mb_004,healthy,36.5,41.3,12.7,7.0,1.9,1.0,0.3
+sample_mb_005,healthy,34.7,43.1,12.0,6.9,2.0,1.1,0.2
+sample_mb_006,disease,28.3,35.2,18.5,9.8,4.2,3.1,0.9
+sample_mb_007,disease,26.7,33.8,19.2,10.5,4.8,3.8,1.2
+sample_mb_008,disease,29.1,36.4,17.9,9.2,3.9,2.8,0.7
+sample_mb_009,disease,27.5,34.6,18.8,10.1,4.5,3.5,1.0
+sample_mb_010,disease,28.9,35.9,18.1,9.6,4.1,3.0,0.8
+sample_mb_011,healthy,35.8,40.9,12.5,7.1,2.2,1.3,0.2
+sample_mb_012,healthy,36.2,41.7,12.2,6.7,2.0,1.0,0.4
+sample_mb_013,disease,27.1,34.2,19.5,10.8,4.7,3.2,0.5
+sample_mb_014,disease,28.6,35.7,18.3,9.4,4.0,2.9,1.1
+sample_mb_015,healthy,34.5,42.8,11.9,6.8,2.1,1.4,0.5
