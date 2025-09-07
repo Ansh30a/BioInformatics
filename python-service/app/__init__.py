@@ -6,7 +6,7 @@ def create_app():
     app = Flask(__name__)
     
     # Enable CORS for all routes
-    CORS(app, origins=["http://localhost:5173", "http://localhost:3000"])
+    CORS(app, origins=["http://localhost:5173", "http://localhost:3000", "https://bio-informatics.vercel.app"])
     
     # Configuration
     app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB max file size
