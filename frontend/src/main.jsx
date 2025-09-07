@@ -16,12 +16,25 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           style: {
             background: '#363636',
             color: '#fff',
+            borderRadius: '8px',
+            padding: '12px 16px',
           },
           success: {
             duration: 3000,
-            theme: {
+            iconTheme: {
               primary: '#4aed88',
+              secondary: '#fff',
             },
+          },
+          error: {
+            duration: 5000,
+            iconTheme: {
+              primary: '#f87171',
+              secondary: '#fff',
+            },
+          },
+          loading: {
+            duration: 60000, // Longer duration for service wake-up
           },
         }}
       />

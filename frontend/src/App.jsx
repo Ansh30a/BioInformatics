@@ -14,10 +14,52 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [servicesReady, setServicesReady] = useState(false)
 
   useEffect(() => {
-    checkAuth()
+    // Wake up services and check authentication
+    initializeApp()
   }, [])
+
+  const initializeApp = async () => {
+    try {
+      // Wake up backend and python services
+      await wakeUpServices()
+      
+      // Then check authentication
+      await checkAuth()
+    } catch (error) {
+      console.error('App initialization error:', error)
+      setLoading(false)
+    }
+  }
+
+  const wakeUpServices = async () => {
+    console.log('Waking up services...')
+    
+    const wakeUpPromises = [
+      // Wake up backend service
+      fetch('https://bioinformatics-backend.onrender.com/api/health', {
+        method: 'GET',
+        mode: 'cors'
+      }).catch(() => console.log('Backend starting up...')),
+      
+      // Wake up python service
+      fetch('https://bioinformatics-python-service.onrender.com/api/health', {
+        method: 'GET',
+        mode: 'cors'
+      }).catch(() => console.log('Python service starting up...'))
+    ]
+    
+    try {
+      await Promise.allSettled(wakeUpPromises)
+      console.log('Services wake-up completed')
+      setServicesReady(true)
+    } catch (error) {
+      console.log('Some services may still be starting up...')
+      setServicesReady(true) // Continue anyway
+    }
+  }
 
   const checkAuth = async () => {
     const token = getToken()
@@ -31,6 +73,8 @@ function App() {
         removeToken()
         setIsAuthenticated(false)
       }
+    } else {
+      setIsAuthenticated(false)
     }
     setLoading(false)
   }
@@ -48,8 +92,16 @@ function App() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="spinner"></div>
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="spinner mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">
+            {!servicesReady ? 'Starting up services...' : 'Loading application...'}
+          </h2>
+          <p className="text-gray-500">
+            {!servicesReady ? 'This may take up to 30 seconds on first load' : 'Please wait a moment'}
+          </p>
+        </div>
       </div>
     )
   }
