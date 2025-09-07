@@ -29,6 +29,7 @@ const ChartComponent = ({ data }) => {
   const [chartType, setChartType] = useState('line')
   const [selectedColumns, setSelectedColumns] = useState([])
   const [chartData, setChartData] = useState(null)
+  const [showColumnSelector, setShowColumnSelector] = useState(false)
 
   useEffect(() => {
     if (data && data.headers && data.rows) {
@@ -90,11 +91,20 @@ const ChartComponent = ({ data }) => {
     maintainAspectRatio: false,
     plugins: {
       legend: {
-        position: 'top',
+        position: window.innerWidth < 640 ? 'bottom' : 'top',
+        labels: {
+          boxWidth: window.innerWidth < 640 ? 12 : 15,
+          font: {
+            size: window.innerWidth < 640 ? 10 : 12
+          }
+        }
       },
       title: {
         display: true,
         text: `Dataset Visualization - ${chartType.charAt(0).toUpperCase() + chartType.slice(1)} Chart`,
+        font: {
+          size: window.innerWidth < 640 ? 14 : 16
+        }
       },
     },
     scales: chartType === 'scatter' ? {
@@ -104,26 +114,47 @@ const ChartComponent = ({ data }) => {
         title: {
           display: true,
           text: 'Sample Index'
+        },
+        ticks: {
+          font: {
+            size: window.innerWidth < 640 ? 10 : 12
+          }
         }
       },
       y: {
         title: {
           display: true,
           text: 'Value'
+        },
+        ticks: {
+          font: {
+            size: window.innerWidth < 640 ? 10 : 12
+          }
         }
       }
     } : {
       y: {
         beginAtZero: true,
         title: {
-          display: true,
+          display: window.innerWidth >= 640,
           text: 'Expression Level'
+        },
+        ticks: {
+          font: {
+            size: window.innerWidth < 640 ? 10 : 12
+          }
         }
       },
       x: {
         title: {
-          display: true,
+          display: window.innerWidth >= 640,
           text: 'Samples'
+        },
+        ticks: {
+          font: {
+            size: window.innerWidth < 640 ? 10 : 12
+          },
+          maxTicksLimit: window.innerWidth < 640 ? 5 : 10
         }
       }
     }
@@ -153,30 +184,65 @@ const ChartComponent = ({ data }) => {
   })
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div className="card">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4 lg:mb-0">Data Visualization</h3>
-          
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Chart Type</label>
-              <select
-                value={chartType}
-                onChange={(e) => setChartType(e.target.value)}
-                className="input-field"
-              >
-                <option value="line">Line Chart</option>
-                <option value="bar">Bar Chart</option>
-                <option value="scatter">Scatter Plot</option>
-              </select>
+        {/* Header */}
+        <div className="flex flex-col space-y-4 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-0">Data Visualization</h3>
+            
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4">
+              <div className="flex-1 sm:flex-none">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Chart Type</label>
+                <select
+                  value={chartType}
+                  onChange={(e) => setChartType(e.target.value)}
+                  className="input-field"
+                >
+                  <option value="line">Line Chart</option>
+                  <option value="bar">Bar Chart</option>
+                  <option value="scatter">Scatter Plot</option>
+                </select>
+              </div>
+              
+              {/* Mobile Column Selector Button */}
+              <div className="sm:hidden">
+                <button
+                  onClick={() => setShowColumnSelector(!showColumnSelector)}
+                  className="btn-secondary w-full"
+                >
+                  Select Columns ({selectedColumns.length})
+                </button>
+              </div>
             </div>
           </div>
+
+          {/* Mobile Column Selector */}
+          {showColumnSelector && (
+            <div className="sm:hidden border-t pt-4">
+              <h4 className="font-medium text-gray-900 mb-3">Select Columns (max 5)</h4>
+              <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto">
+                {numericColumns.map((column) => (
+                  <label key={column} className="flex items-center text-sm">
+                    <input
+                      type="checkbox"
+                      checked={selectedColumns.includes(column)}
+                      onChange={() => handleColumnToggle(column)}
+                      className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 mr-2"
+                      disabled={!selectedColumns.includes(column) && selectedColumns.length >= 5}
+                    />
+                    <span className="truncate">{column}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3">
-            <div className="chart-container">
+        <div className="flex flex-col lg:flex-row lg:space-x-6">
+          {/* Chart */}
+          <div className="lg:flex-1">
+            <div style={{ height: window.innerWidth < 640 ? '250px' : window.innerWidth < 1024 ? '300px' : '400px' }}>
               {chartData && (
                 <>
                   {chartType === 'line' && <Line data={chartData} options={chartOptions} />}
@@ -187,19 +253,20 @@ const ChartComponent = ({ data }) => {
             </div>
           </div>
 
-          <div>
+          {/* Desktop Column Selector */}
+          <div className="hidden sm:block lg:w-64 mt-6 lg:mt-0">
             <h4 className="font-medium text-gray-900 mb-3">Select Columns</h4>
-            <div className="space-y-2 max-h-64 overflow-y-auto">
+            <div className="space-y-2 max-h-64 overflow-y-auto border rounded-lg p-3">
               {numericColumns.map((column) => (
-                <label key={column} className="flex items-center">
+                <label key={column} className="flex items-center text-sm">
                   <input
                     type="checkbox"
                     checked={selectedColumns.includes(column)}
                     onChange={() => handleColumnToggle(column)}
-                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+                    className="rounded border-gray-300 text-primary-600 focus:ring-primary-500 mr-2"
                     disabled={!selectedColumns.includes(column) && selectedColumns.length >= 5}
                   />
-                  <span className="ml-2 text-sm text-gray-700">{column}</span>
+                  <span className="truncate">{column}</span>
                 </label>
               ))}
             </div>

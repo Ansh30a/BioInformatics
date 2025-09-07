@@ -56,10 +56,13 @@ const Register = ({ onLogin }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+    <div className="min-h-screen flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 bg-gray-50">
+      <div className="max-w-md w-full space-y-6 sm:space-y-8">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-2xl sm:text-3xl font-bold text-white">🧬</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
             Create your account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
@@ -67,143 +70,145 @@ const Register = ({ onLogin }) => {
           </p>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                Full Name *
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                required
-                value={formData.name}
-                onChange={handleChange}
-                className="input-field"
-                placeholder="Enter your full name"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email Address *
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={formData.email}
-                onChange={handleChange}
-                className="input-field"
-                placeholder="Enter your email address"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="institution" className="block text-sm font-medium text-gray-700">
-                Institution
-              </label>
-              <input
-                id="institution"
-                name="institution"
-                type="text"
-                value={formData.institution}
-                onChange={handleChange}
-                className="input-field"
-                placeholder="Your university or research institution"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="researchArea" className="block text-sm font-medium text-gray-700">
-                Research Area
-              </label>
-              <input
-                id="researchArea"
-                name="researchArea"
-                type="text"
-                value={formData.researchArea}
-                onChange={handleChange}
-                className="input-field"
-                placeholder="e.g., Genomics, Proteomics, Bioinformatics"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password *
-              </label>
-              <div className="relative">
+        <div className="bg-white py-6 px-4 sm:py-8 sm:px-6 shadow rounded-lg border border-gray-200">
+          <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name *
+                </label>
                 <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
+                  id="name"
+                  name="name"
+                  type="text"
                   required
-                  value={formData.password}
+                  value={formData.name}
                   onChange={handleChange}
-                  className="input-field pr-10"
-                  placeholder="Create a password (min. 6 characters)"
+                  className="input-field"
+                  placeholder="Enter your full name"
                 />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
-                </button>
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address *
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  required
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="Enter your email address"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="institution" className="block text-sm font-medium text-gray-700 mb-1">
+                  Institution
+                </label>
+                <input
+                  id="institution"
+                  name="institution"
+                  type="text"
+                  value={formData.institution}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="Your university or research institution"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="researchArea" className="block text-sm font-medium text-gray-700 mb-1">
+                  Research Area
+                </label>
+                <input
+                  id="researchArea"
+                  name="researchArea"
+                  type="text"
+                  value={formData.researchArea}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="e.g., Genomics, Proteomics, Bioinformatics"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                  Password *
+                </label>
+                <div className="relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="input-field pr-10"
+                    placeholder="Create a password (min. 6 characters)"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5 text-gray-400" />
+                    ) : (
+                      <Eye className="h-5 w-5 text-gray-400" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirm Password *
+                </label>
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  required
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  className="input-field"
+                  placeholder="Confirm your password"
+                />
               </div>
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirm Password *
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                required
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                className="input-field"
-                placeholder="Confirm your password"
-              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="group relative w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base py-2.5 sm:py-3"
+              >
+                {loading ? (
+                  <div className="flex items-center justify-center">
+                    <div className="spinner mr-2"></div>
+                    Creating account...
+                  </div>
+                ) : (
+                  'Create Account'
+                )}
+              </button>
             </div>
-          </div>
 
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="flex items-center justify-center">
-                  <div className="spinner mr-2"></div>
-                  Creating account...
-                </div>
-              ) : (
-                'Create Account'
-              )}
-            </button>
-          </div>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
-                Sign in here
-              </Link>
-            </p>
-          </div>
-        </form>
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                Already have an account?{' '}
+                <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
+                  Sign in here
+                </Link>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   )

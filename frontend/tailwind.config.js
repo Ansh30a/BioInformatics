@@ -19,6 +19,10 @@ export default {
           800: '#1e40af',
           900: '#1e3a8a',
         }
+      },
+      screens: {
+        'xs': '475px',
+        '3xl': '1600px',
       }
     },
   },

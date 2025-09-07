@@ -52,14 +52,18 @@ const HomePage = ({ user }) => {
   }
 
   const StatCard = ({ icon: Icon, title, value, color = "primary" }) => (
-    <div className="card">
+    <div className="card p-4 sm:p-6">
       <div className="flex items-center">
-        <div className={`p-3 rounded-lg bg-${color}-100 mr-4`}>
-          <Icon className={`w-6 h-6 text-${color}-600`} />
+        <div className={`p-2 sm:p-3 rounded-lg bg-${color}-100 mr-3 sm:mr-4 flex-shrink-0`}>
+          <Icon className={`w-5 h-5 sm:w-6 sm:h-6 text-${color}-600`} />
         </div>
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900">{value}</p>
+        <div className="flex-1 min-w-0">
+          <p className="text-xs sm:text-sm font-medium text-gray-600 truncate">
+            {title}
+          </p>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900">
+            {value}
+          </p>
         </div>
       </div>
     </div>
@@ -74,19 +78,32 @@ const HomePage = ({ user }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg p-6 text-white">
-        <h1 className="text-2xl font-bold mb-2">
-          Welcome back, {user?.name}!
-        </h1>
-        <p className="text-primary-100">
-          Manage your biological datasets and perform advanced analysis with our comprehensive platform.
-        </p>
+      <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg p-4 sm:p-6 text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex-1">
+            <h1 className="text-xl sm:text-2xl font-bold mb-2">
+              Welcome back, {user?.name}!
+            </h1>
+            <p className="text-primary-100 text-sm sm:text-base">
+              Manage your biological datasets and perform advanced analysis with our comprehensive platform.
+            </p>
+          </div>
+          <div className="mt-4 sm:mt-0 sm:text-right">
+            <p className="text-primary-100 text-xs sm:text-sm">
+              {new Date().toLocaleDateString('en-US', { 
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric'
+              })}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <StatCard
           icon={Database}
           title="Total Datasets"
@@ -108,47 +125,47 @@ const HomePage = ({ user }) => {
       </div>
 
       {/* Quick Actions */}
-      <div className="card">
+      <div className="card p-4 sm:p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <Link
             to="/datasets"
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
+            className="flex items-center p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
           >
-            <Plus className="w-5 h-5 text-primary-600 mr-3" />
-            <span className="font-medium text-gray-900">Upload Dataset</span>
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mr-2 sm:mr-3 flex-shrink-0" />
+            <span className="font-medium text-gray-900 text-sm sm:text-base">Upload Dataset</span>
           </Link>
           
           <Link
             to="/datasets"
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
+            className="flex items-center p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
           >
-            <FileSpreadsheet className="w-5 h-5 text-primary-600 mr-3" />
-            <span className="font-medium text-gray-900">View Datasets</span>
+            <FileSpreadsheet className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mr-2 sm:mr-3 flex-shrink-0" />
+            <span className="font-medium text-gray-900 text-sm sm:text-base">View Datasets</span>
           </Link>
           
           <Link
             to="/analysis"
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
+            className="flex items-center p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
           >
-            <Activity className="w-5 h-5 text-primary-600 mr-3" />
-            <span className="font-medium text-gray-900">Run Analysis</span>
+            <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mr-2 sm:mr-3 flex-shrink-0" />
+            <span className="font-medium text-gray-900 text-sm sm:text-base">Run Analysis</span>
           </Link>
           
           <Link
             to="/profile"
-            className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
+            className="flex items-center p-3 sm:p-4 border border-gray-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
           >
-            <Users className="w-5 h-5 text-primary-600 mr-3" />
-            <span className="font-medium text-gray-900">Profile Settings</span>
+            <Users className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 mr-2 sm:mr-3 flex-shrink-0" />
+            <span className="font-medium text-gray-900 text-sm sm:text-base">Profile Settings</span>
           </Link>
         </div>
       </div>
 
       {/* Recent Datasets */}
-      <div className="card">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-lg font-semibold text-gray-900">Recent Datasets</h2>
+      <div className="card p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 mb-2 sm:mb-0">Recent Datasets</h2>
           <Link
             to="/datasets"
             className="text-primary-600 hover:text-primary-500 text-sm font-medium"
@@ -162,10 +179,10 @@ const HomePage = ({ user }) => {
             {recentDatasets.map((dataset) => (
               <div
                 key={dataset._id}
-                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-3 sm:p-4 border border-gray-200 rounded-lg hover:bg-gray-50"
               >
-                <div className="flex-1">
-                  <h3 className="font-medium text-gray-900">{dataset.name}</h3>
+                <div className="flex-1 min-w-0 mb-2 sm:mb-0">
+                  <h3 className="font-medium text-gray-900 truncate">{dataset.name}</h3>
                   <p className="text-sm text-gray-500">
                     {dataset.type.replace('_', ' ').toUpperCase()} • {dataset.sampleCount} samples
                   </p>
@@ -173,7 +190,7 @@ const HomePage = ({ user }) => {
                     Uploaded {new Date(dataset.createdAt).toLocaleDateString()}
                   </p>
                 </div>
-                <div className="flex items-center space-x-2">
+                <div className="flex items-center justify-between sm:justify-end space-x-2">
                   <span className={`px-2 py-1 text-xs font-medium rounded-full ${
                     dataset.status === 'ready' 
                       ? 'bg-green-100 text-green-800'
@@ -190,7 +207,7 @@ const HomePage = ({ user }) => {
         ) : (
           <div className="text-center py-8">
             <Database className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-            <p className="text-gray-500">No datasets uploaded yet</p>
+            <p className="text-gray-500 mb-2">No datasets uploaded yet</p>
             <p className="text-sm text-gray-400 mb-4">
               Start by uploading your first biological dataset
             </p>

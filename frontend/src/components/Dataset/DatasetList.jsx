@@ -65,12 +65,12 @@ const DatasetList = ({ user, searchTerm, filterType, onDatasetSelect }) => {
 
     return (
       <div className="card hover:shadow-md transition-shadow">
-        <div className="flex items-start justify-between">
-          <div className="flex-1">
-            <div className="flex items-center space-x-3 mb-2">
-              <Database className="w-5 h-5 text-primary-600" />
-              <h3 className="font-semibold text-gray-900">{dataset.name}</h3>
-              <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex-1 min-w-0 mb-3 sm:mb-0">
+            <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
+              <Database className="w-4 h-4 sm:w-5 sm:h-5 text-primary-600 flex-shrink-0" />
+              <h3 className="font-semibold text-gray-900 text-sm sm:text-base truncate">{dataset.name}</h3>
+              <span className={`px-2 py-1 text-xs font-medium rounded-full flex-shrink-0 ${
                 dataset.status === 'ready' 
                   ? 'bg-green-100 text-green-800'
                   : dataset.status === 'processing'
@@ -82,21 +82,21 @@ const DatasetList = ({ user, searchTerm, filterType, onDatasetSelect }) => {
             </div>
             
             {dataset.description && (
-              <p className="text-gray-600 text-sm mb-3">{dataset.description}</p>
+              <p className="text-gray-600 text-sm mb-3 line-clamp-2">{dataset.description}</p>
             )}
             
-            <div className="flex flex-wrap gap-4 text-sm text-gray-500 mb-3">
+            <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-3">
               <div className="flex items-center">
-                <FileText className="w-4 h-4 mr-1" />
-                {dataset.type.replace('_', ' ').toUpperCase()}
+                <FileText className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
+                <span className="truncate">{dataset.type.replace('_', ' ').toUpperCase()}</span>
               </div>
               <div className="flex items-center">
-                <Users className="w-4 h-4 mr-1" />
-                {dataset.sampleCount} samples
+                <Users className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
+                <span>{dataset.sampleCount} samples</span>
               </div>
               <div className="flex items-center">
-                <Calendar className="w-4 h-4 mr-1" />
-                {new Date(dataset.createdAt).toLocaleDateString()}
+                <Calendar className="w-3 h-3 sm:w-4 sm:h-4 mr-1 flex-shrink-0" />
+                <span>{new Date(dataset.createdAt).toLocaleDateString()}</span>
               </div>
             </div>
             
@@ -105,57 +105,78 @@ const DatasetList = ({ user, searchTerm, filterType, onDatasetSelect }) => {
             </div>
           </div>
           
-          <div className="relative">
-            <button
-              onClick={() => setShowMenu(!showMenu)}
-              className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
-            >
-              <MoreVertical className="w-4 h-4" />
-            </button>
-            
-            {showMenu && (
-              <>
-                <div 
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowMenu(false)}
-                />
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
-                  <button
-                    onClick={() => {
-                      onDatasetSelect(dataset)
-                      setShowMenu(false)
-                    }}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Eye className="w-4 h-4 mr-2" />
-                    View Details
-                  </button>
-                  
-                  <button
+          <div className="flex items-center justify-between sm:justify-end space-x-2">
+            {/* Quick Action Buttons - Mobile */}
+            <div className="flex space-x-1 sm:hidden">
+              <button
+                onClick={() => onDatasetSelect(dataset)}
+                className="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-colors"
+              >
+                <Eye className="w-4 h-4" />
+              </button>
+              {isOwner && (
+                <button
+                  onClick={() => handleDelete(dataset._id, dataset.name)}
+                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+
+            {/* Desktop Menu */}
+            <div className="relative hidden sm:block">
+              <button
+                onClick={() => setShowMenu(!showMenu)}
+                className="p-2 text-gray-400 hover:text-gray-600 rounded-lg hover:bg-gray-100"
+              >
+                <MoreVertical className="w-4 h-4" />
+              </button>
+              
+              {showMenu && (
+                <>
+                  <div 
+                    className="fixed inset-0 z-10"
                     onClick={() => setShowMenu(false)}
-                    className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    <Download className="w-4 h-4 mr-2" />
-                    Download
-                  </button>
-                  
-                  {isOwner && (
-                    <div className="border-t border-gray-100">
-                      <button
-                        onClick={() => {
-                          handleDelete(dataset._id, dataset.name)
-                          setShowMenu(false)
-                        }}
-                        className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                      >
-                        <Trash2 className="w-4 h-4 mr-2" />
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </div>
-              </>
-            )}
+                  />
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                    <button
+                      onClick={() => {
+                        onDatasetSelect(dataset)
+                        setShowMenu(false)
+                      }}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <Eye className="w-4 h-4 mr-2" />
+                      View Details
+                    </button>
+                    
+                    <button
+                      onClick={() => setShowMenu(false)}
+                      className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </button>
+                    
+                    {isOwner && (
+                      <div className="border-t border-gray-100">
+                        <button
+                          onClick={() => {
+                            handleDelete(dataset._id, dataset.name)
+                            setShowMenu(false)
+                          }}
+                          className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                        >
+                          <Trash2 className="w-4 h-4 mr-2" />
+                          Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -171,10 +192,10 @@ const DatasetList = ({ user, searchTerm, filterType, onDatasetSelect }) => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {datasets.length > 0 ? (
         <>
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {datasets.map((dataset) => (
               <DatasetCard key={dataset._id} dataset={dataset} />
             ))}
@@ -182,30 +203,30 @@ const DatasetList = ({ user, searchTerm, filterType, onDatasetSelect }) => {
           
           {/* Pagination */}
           {pagination.pages > 1 && (
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-gray-700">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-3 sm:space-y-0">
+              <p className="text-sm text-gray-700 text-center sm:text-left">
                 Showing {((pagination.page - 1) * pagination.limit) + 1} to{' '}
                 {Math.min(pagination.page * pagination.limit, pagination.total)} of{' '}
                 {pagination.total} results
               </p>
               
-              <div className="flex space-x-2">
+              <div className="flex items-center justify-center space-x-2">
                 <button
                   onClick={() => setCurrentPage(currentPage - 1)}
                   disabled={currentPage <= 1}
-                  className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed text-sm px-3 py-2"
                 >
                   Previous
                 </button>
                 
-                <span className="flex items-center px-4 py-2 text-sm text-gray-700">
+                <span className="flex items-center px-3 py-2 text-sm text-gray-700">
                   Page {currentPage} of {pagination.pages}
                 </span>
                 
                 <button
                   onClick={() => setCurrentPage(currentPage + 1)}
                   disabled={currentPage >= pagination.pages}
-                  className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="btn-secondary disabled:opacity-50 disabled:cursor-not-allowed text-sm px-3 py-2"
                 >
                   Next
                 </button>
@@ -215,9 +236,9 @@ const DatasetList = ({ user, searchTerm, filterType, onDatasetSelect }) => {
         </>
       ) : (
         <div className="text-center py-12">
-          <Database className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No datasets found</h3>
-          <p className="text-gray-500 mb-6">
+          <Database className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
+          <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">No datasets found</h3>
+          <p className="text-gray-500 mb-6 text-sm sm:text-base">
             {searchTerm || filterType !== 'all' 
               ? 'Try adjusting your search criteria'
               : 'Start by uploading your first dataset'
