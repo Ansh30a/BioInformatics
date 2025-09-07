@@ -1,5 +1,6 @@
 const axios = require('axios');
 const Dataset = require('../models/Dataset');
+const fs = require('fs');
 
 const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || 'http://localhost:5001';
 
@@ -36,10 +37,30 @@ const getBasicStats = async (req, res) => {
       });
     }
 
+    // Read file content instead of sending path
+    let fileContent;
+    try {
+      fileContent = fs.readFileSync(dataset.filePath, 'utf8');
+    } catch (fileError) {
+      console.error('File read error:', fileError);
+      return res.status(500).json({
+        success: false,
+        message: 'Error reading dataset file'
+      });
+    }
+
+    console.log(`Calling Python service: ${PYTHON_SERVICE_URL}/api/stats`);
+    
     // Call Python service for analysis
     const response = await axios.post(`${PYTHON_SERVICE_URL}/api/stats`, {
-      filePath: dataset.filePath,
+      fileContent: fileContent, // Send actual content
+      fileName: dataset.fileName, // Send filename for format detection
       columns: columns
+    }, {
+      timeout: 120000, // 2 minutes timeout
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.data.success) {
@@ -64,12 +85,18 @@ const getBasicStats = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Basic stats error:', error);
+    console.error('Analysis Error Details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      config: error.config
+    });
     
     if (error.response) {
-      return res.status(400).json({
+      return res.status(error.response.status).json({
         success: false,
-        message: error.response.data.message || 'Python service error'
+        message: error.response.data.message || 'Python service error',
+        details: error.response.data
       });
     }
 
@@ -113,10 +140,30 @@ const getCorrelation = async (req, res) => {
       });
     }
 
+    // Read file content instead of sending path
+    let fileContent;
+    try {
+      fileContent = fs.readFileSync(dataset.filePath, 'utf8');
+    } catch (fileError) {
+      console.error('File read error:', fileError);
+      return res.status(500).json({
+        success: false,
+        message: 'Error reading dataset file'
+      });
+    }
+
+    console.log(`Calling Python service: ${PYTHON_SERVICE_URL}/api/correlation`);
+
     // Call Python service for correlation analysis
     const response = await axios.post(`${PYTHON_SERVICE_URL}/api/correlation`, {
-      filePath: dataset.filePath,
+      fileContent: fileContent,
+      fileName: dataset.fileName,
       method
+    }, {
+      timeout: 120000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.data.success) {
@@ -141,12 +188,17 @@ const getCorrelation = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Correlation analysis error:', error);
+    console.error('Correlation Analysis Error Details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
     
     if (error.response) {
-      return res.status(400).json({
+      return res.status(error.response.status).json({
         success: false,
-        message: error.response.data.message || 'Python service error'
+        message: error.response.data.message || 'Python service error',
+        details: error.response.data
       });
     }
 
@@ -189,12 +241,32 @@ const getDifferentialAnalysis = async (req, res) => {
       });
     }
 
+    // Read file content instead of sending path
+    let fileContent;
+    try {
+      fileContent = fs.readFileSync(dataset.filePath, 'utf8');
+    } catch (fileError) {
+      console.error('File read error:', fileError);
+      return res.status(500).json({
+        success: false,
+        message: 'Error reading dataset file'
+      });
+    }
+
+    console.log(`Calling Python service: ${PYTHON_SERVICE_URL}/api/differential`);
+
     // Call Python service for differential analysis
     const response = await axios.post(`${PYTHON_SERVICE_URL}/api/differential`, {
-      filePath: dataset.filePath,
+      fileContent: fileContent,
+      fileName: dataset.fileName,
       condition1,
       condition2,
       pValueThreshold
+    }, {
+      timeout: 120000,
+      headers: {
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.data.success) {
@@ -219,12 +291,17 @@ const getDifferentialAnalysis = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Differential analysis error:', error);
+    console.error('Differential Analysis Error Details:', {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status
+    });
     
     if (error.response) {
-      return res.status(400).json({
+      return res.status(error.response.status).json({
         success: false,
-        message: error.response.data.message || 'Python service error'
+        message: error.response.data.message || 'Python service error',
+        details: error.response.data
       });
     }
 

@@ -4,14 +4,44 @@ from scipy import stats
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+from io import StringIO
 import os
 
 class AnalysisService:
     def __init__(self):
         self.scaler = StandardScaler()
     
+    def load_dataset_from_content(self, file_content, file_name):
+        """Load dataset from file content string"""
+        try:
+            # Create StringIO object from content
+            file_buffer = StringIO(file_content)
+            
+            # Determine file type from filename
+            if file_name.endswith('.csv'):
+                df = pd.read_csv(file_buffer)
+            elif file_name.endswith('.tsv'):
+                df = pd.read_csv(file_buffer, sep='\t')
+            elif file_name.endswith('.txt'):
+                # Try to detect delimiter from content
+                file_buffer.seek(0)
+                first_line = file_buffer.readline()
+                file_buffer.seek(0)
+                
+                if '\t' in first_line:
+                    df = pd.read_csv(file_buffer, sep='\t')
+                else:
+                    df = pd.read_csv(file_buffer)
+            else:
+                # Try comma-separated by default
+                df = pd.read_csv(file_buffer)
+            
+            return df
+        except Exception as e:
+            raise ValueError(f"Error parsing file content: {str(e)}")
+    
     def load_dataset(self, file_path):
-        """Load dataset from file path"""
+        """Load dataset from file path (kept for backward compatibility)"""
         if not os.path.exists(file_path):
             raise FileNotFoundError(f"File not found: {file_path}")
         
@@ -43,9 +73,16 @@ class AnalysisService:
             return numeric_cols[1:]  # Skip first column if it's numeric but likely an ID
         return numeric_cols
     
-    def calculate_basic_stats(self, file_path, columns=None):
-        """Calculate basic statistics for dataset"""
-        df = self.load_dataset(file_path)
+    def calculate_basic_stats(self, file_content_or_path, file_name_or_columns=None, columns=None):
+        """Calculate basic statistics for dataset - handles both content and file path"""
+        # Determine if we're using file content or file path
+        if isinstance(file_content_or_path, str) and (file_content_or_path.startswith('/') or file_content_or_path.startswith('C:') or os.path.exists(file_content_or_path)):
+            # This looks like a file path
+            df = self.load_dataset(file_content_or_path)
+            columns = file_name_or_columns if file_name_or_columns else columns
+        else:
+            # This is file content
+            df = self.load_dataset_from_content(file_content_or_path, file_name_or_columns)
         
         if columns:
             # Use specified columns
@@ -81,9 +118,17 @@ class AnalysisService:
         
         return results
     
-    def calculate_correlation(self, file_path, method='pearson'):
-        """Calculate correlation matrix"""
-        df = self.load_dataset(file_path)
+    def calculate_correlation(self, file_content_or_path, file_name_or_method=None, method='pearson'):
+        """Calculate correlation matrix - handles both content and file path"""
+        # Determine if we're using file content or file path
+        if isinstance(file_content_or_path, str) and (file_content_or_path.startswith('/') or file_content_or_path.startswith('C:') or os.path.exists(file_content_or_path)):
+            # This looks like a file path
+            df = self.load_dataset(file_content_or_path)
+            method = file_name_or_method if file_name_or_method else method
+        else:
+            # This is file content
+            df = self.load_dataset_from_content(file_content_or_path, file_name_or_method)
+        
         numeric_cols = self.get_numeric_columns(df)
         
         if len(numeric_cols) < 2:
@@ -109,9 +154,20 @@ class AnalysisService:
         
         return results
     
-    def differential_analysis(self, file_path, condition1, condition2, p_value_threshold=0.05):
-        """Perform differential expression analysis"""
-        df = self.load_dataset(file_path)
+    def differential_analysis(self, file_content_or_path, file_name_or_condition1=None, condition1_or_condition2=None, condition2_or_threshold=None, p_value_threshold=0.05):
+        """Perform differential expression analysis - handles both content and file path"""
+        # Determine if we're using file content or file path
+        if isinstance(file_content_or_path, str) and (file_content_or_path.startswith('/') or file_content_or_path.startswith('C:') or os.path.exists(file_content_or_path)):
+            # This looks like a file path
+            df = self.load_dataset(file_content_or_path)
+            condition1 = file_name_or_condition1
+            condition2 = condition1_or_condition2
+            p_value_threshold = condition2_or_threshold if condition2_or_threshold else p_value_threshold
+        else:
+            # This is file content
+            df = self.load_dataset_from_content(file_content_or_path, file_name_or_condition1)
+            condition1 = condition1_or_condition2
+            condition2 = condition2_or_threshold
         
         # Check if condition column exists
         condition_col = None
@@ -241,9 +297,19 @@ class AnalysisService:
         
         return results
     
-    def clustering_analysis(self, file_path, n_clusters=3, method='kmeans'):
-        """Perform clustering analysis"""
-        df = self.load_dataset(file_path)
+    def clustering_analysis(self, file_content_or_path, file_name_or_clusters=None, n_clusters_or_method=3, method='kmeans'):
+        """Perform clustering analysis - handles both content and file path"""
+        # Determine if we're using file content or file path
+        if isinstance(file_content_or_path, str) and (file_content_or_path.startswith('/') or file_content_or_path.startswith('C:') or os.path.exists(file_content_or_path)):
+            # This looks like a file path
+            df = self.load_dataset(file_content_or_path)
+            n_clusters = file_name_or_clusters if file_name_or_clusters else n_clusters_or_method
+            method = n_clusters_or_method if isinstance(n_clusters_or_method, str) else method
+        else:
+            # This is file content
+            df = self.load_dataset_from_content(file_content_or_path, file_name_or_clusters)
+            n_clusters = n_clusters_or_method
+        
         numeric_cols = self.get_numeric_columns(df)
         
         if len(numeric_cols) < 2:
