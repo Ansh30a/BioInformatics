@@ -15,6 +15,8 @@ const app = express();
 
 app.set('trust proxy', 1)
 
+app.set('trust proxy', ['44.229.227.142' || '54.188.71.94' || '52.13.128.108', '::1'])
+
 // Security middleware
 app.use(helmet());
 
@@ -28,7 +30,7 @@ app.use('/api', limiter);
 // CORS configuration
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://bio-informatics.vercel.app/'] 
+    ? ['https://bio-informatics.vercel.app'] 
     : ['http://localhost:5173'],
   credentials: true
 }));
