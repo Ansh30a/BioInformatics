@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 
 // Create axios instance
 const api = axios.create({
-  baseURL: 'https://bioinformatics-backend.onrender.com' || '/api',
+  baseURL: 'https://bioinformatics-backend.onrender.com/api' || '/api',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
