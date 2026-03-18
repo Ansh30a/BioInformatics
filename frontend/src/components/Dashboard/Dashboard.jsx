@@ -369,7 +369,7 @@ const Dashboard = ({ user }) => {
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg p-6 text-white">
+      <div className="bg-gradient-to-r from-primary-200 to-primary-600 rounded-lg p-6 text-white">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold mb-2">

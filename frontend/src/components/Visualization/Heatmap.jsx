@@ -101,9 +101,9 @@ const Heatmap = ({ data, isCorrelation = false }) => {
 
   if (!heatmapData) {
     return (
-      <div className="card">
+      <div className="glass-card p-6">
         <div className="text-center py-8">
-          <p className="text-gray-500">No data available for heatmap</p>
+          <p className="text-slate-600">No data available for heatmap</p>
         </div>
       </div>
     )
@@ -114,15 +114,15 @@ const Heatmap = ({ data, isCorrelation = false }) => {
   const displayColLabels = heatmapData.colLabels
 
   return (
-    <div className="card">
+    <div className="glass-panel p-4 sm:p-6 mt-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-lg font-semibold text-slate-900">
           {isCorrelation ? 'Correlation Heatmap' : 'Expression Heatmap'}
         </h3>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-2 text-sm">
+          <div className="flex items-center space-x-2 text-sm text-slate-700">
             <span>Low</span>
-            <div className="w-20 h-4 bg-gradient-to-r from-white to-blue-500"></div>
+            <div className="w-20 h-4 bg-gradient-to-r from-slate-100 to-blue-600 rounded border border-slate-200"></div>
             <span>High</span>
           </div>
         </div>
@@ -137,7 +137,7 @@ const Heatmap = ({ data, isCorrelation = false }) => {
                 {displayColLabels.map((label, index) => (
                   <th
                     key={index}
-                    className="px-1 py-1 text-xs font-medium text-gray-700 transform -rotate-45 origin-bottom-left"
+                    className="px-1 py-1 text-xs font-medium text-slate-700 transform -rotate-45 origin-bottom-left"
                     style={{ minWidth: '40px', height: '80px' }}
                   >
                     <div className="w-12 truncate" title={label}>
@@ -150,7 +150,7 @@ const Heatmap = ({ data, isCorrelation = false }) => {
             <tbody>
               {displayMatrix.map((row, rowIndex) => (
                 <tr key={rowIndex}>
-                  <td className="px-2 py-1 text-xs font-medium text-gray-700 text-right bg-gray-50 sticky left-0">
+                  <td className="px-2 py-1 text-xs font-medium text-slate-700 text-right bg-white sticky left-0 border-r border-slate-100">
                     <div className="w-20 truncate" title={displayRowLabels[rowIndex]}>
                       {displayRowLabels[rowIndex]}
                     </div>
@@ -158,7 +158,7 @@ const Heatmap = ({ data, isCorrelation = false }) => {
                   {row.map((value, colIndex) => (
                     <td
                       key={colIndex}
-                      className="w-8 h-6 border border-gray-200 cursor-pointer hover:border-gray-400"
+                      className="w-8 h-6 border border-slate-200 cursor-pointer hover:border-white/30"
                       style={{ backgroundColor: getColor(value, isCorrelation) }}
                       title={getCellTitle(value, rowIndex, colIndex)}
                     >
@@ -171,7 +171,7 @@ const Heatmap = ({ data, isCorrelation = false }) => {
         </div>
       </div>
 
-      <div className="mt-4 text-sm text-gray-600">
+      <div className="mt-4 text-sm text-slate-600 bg-slate-50 p-4 rounded-lg border border-slate-100">
         <p>
           Showing {displayMatrix.length} × {displayColLabels.length} matrix
           {!isCorrelation && ' (normalized values)'}

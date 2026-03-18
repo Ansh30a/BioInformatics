@@ -3,11 +3,14 @@ const csv = require('csv-parser');
 const path = require('path');
 
 // Parse CSV file and return structured data
-const parseCSV = (filePath, options = {}) => {
+const parseCSV = (fileInput, options = {}) => {
   return new Promise((resolve, reject) => {
-    const { limit = null, offset = 0 } = options;
+    const { limit = null, offset = 0, fileName = '' } = options;
     
-    if (!fs.existsSync(filePath)) {
+    // Check if input is a string (file path) or a stream
+    const isPath = typeof fileInput === 'string';
+    
+    if (isPath && !fs.existsSync(fileInput)) {
       return resolve({
         success: false,
         message: 'File not found'
@@ -19,10 +22,13 @@ const parseCSV = (filePath, options = {}) => {
     let rowCount = 0;
     let skippedRows = 0;
 
-    const fileExtension = path.extname(filePath).toLowerCase();
+    const nameToUse = isPath ? fileInput : fileName;
+    const fileExtension = path.extname(nameToUse).toLowerCase();
     const delimiter = fileExtension === '.tsv' ? '\t' : ',';
 
-    fs.createReadStream(filePath)
+    const readStream = isPath ? fs.createReadStream(fileInput) : fileInput;
+
+    readStream
       .pipe(csv({ separator: delimiter }))
       .on('headers', (headerList) => {
         headers = headerList;
@@ -95,9 +101,9 @@ const parseCSV = (filePath, options = {}) => {
 };
 
 // Analyze CSV structure and data types
-const analyzeCSV = async (filePath) => {
+const analyzeCSV = async (fileInput, options = {}) => {
   try {
-    const parseResult = await parseCSV(filePath, { limit: 100 });
+    const parseResult = await parseCSV(fileInput, { limit: 100, ...options });
     
     if (!parseResult.success) {
       return parseResult;

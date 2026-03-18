@@ -21,9 +21,9 @@ const datasetSchema = new mongoose.Schema({
     type: String,
     required: [true, 'File name is required']
   },
-  filePath: {
-    type: String,
-    required: [true, 'File path is required']
+  fileId: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: [true, 'File ID is required']
   },
   fileSize: {
     type: Number,

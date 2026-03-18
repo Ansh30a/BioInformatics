@@ -30,18 +30,18 @@ const Sidebar = ({ isOpen, onClose }) => {
 
       {/* Sidebar */}
       <aside className={`
-        fixed lg:static inset-y-0 left-0 z-40
-        w-64 bg-white border-r border-gray-200 
-        transform transition-transform duration-300 ease-in-out
+        fixed lg:relative inset-y-0 left-0 z-40
+        w-64 glass-card !rounded-[24px] m-4 lg:m-6
+        transform transition-all duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-        flex flex-col
+        flex flex-col shrink-0
       `}>
         {/* Mobile Close Button */}
-        <div className="lg:hidden flex items-center justify-between p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-900">Menu</h2>
+        <div className="lg:hidden flex items-center justify-between p-4 border-b border-slate-200">
+          <h2 className="text-lg font-semibold text-slate-900">Menu</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg hover:bg-gray-100"
+            className="p-2 rounded-lg hover:bg-slate-200 text-slate-700 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>

@@ -1,0 +1,16 @@
+{
+    "name": "bioinformatics",
+    "module": "index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "dev": "concurrently \"cd backend && bun run dev\" \"cd frontend && bun run dev\""
+    },
+    "devDependencies": {
+        "@types/bun": "latest",
+        "concurrently": "^9.2.1"
+    },
+    "peerDependencies": {
+        "typescript": "^5"
+    }
+}

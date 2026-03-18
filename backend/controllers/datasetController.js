@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const Dataset = require('../models/Dataset');
 const csvParser = require('../utils/csvParser');
 const fs = require('fs');
@@ -44,13 +45,33 @@ const uploadDataset = async (req, res) => {
       conditions.push(...uniqueConditions.filter(c => c && c.trim()));
     }
 
+    // Upload to GridFS
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: 'datasets'
+    });
+
+    const uploadStream = bucket.openUploadStream(req.file.originalname, {
+      contentType: req.file.mimetype || 'text/csv'
+    });
+
+    const readStream = fs.createReadStream(req.file.path);
+    readStream.pipe(uploadStream);
+
+    await new Promise((resolve, reject) => {
+      uploadStream.on('error', reject);
+      uploadStream.on('finish', resolve);
+    });
+
+    // Clean up uploaded file from local filesystem
+    fs.unlinkSync(req.file.path);
+
     // Create dataset document
     const dataset = new Dataset({
       name: name.trim(),
       description: description?.trim(),
       type,
       fileName: req.file.originalname,
-      filePath: req.file.path,
+      fileId: uploadStream.id,
       fileSize: req.file.size,
       uploadedBy: req.user._id,
       sampleCount: parsedData.data.rows.length,
@@ -259,8 +280,23 @@ const getDatasetData = async (req, res) => {
       });
     }
 
-    // Read and parse the data file
-    const parsedData = await csvParser.parseCSV(dataset.filePath, {
+    // Read and parse the data file from GridFS
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: 'datasets'
+    });
+    
+    let downloadStream;
+    try {
+      downloadStream = bucket.openDownloadStream(dataset.fileId);
+    } catch (err) {
+      return res.status(500).json({
+        success: false,
+        message: 'Error finding dataset file in storage'
+      });
+    }
+
+    const parsedData = await csvParser.parseCSV(downloadStream, {
+      fileName: dataset.fileName,
       limit: parseInt(limit),
       offset: parseInt(offset)
     });
@@ -381,9 +417,17 @@ const deleteDataset = async (req, res) => {
       });
     }
 
-    // Delete the physical file
-    if (fs.existsSync(dataset.filePath)) {
-      fs.unlinkSync(dataset.filePath);
+    // Delete the file from GridFS
+    const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+      bucketName: 'datasets'
+    });
+    
+    if (dataset.fileId) {
+      try {
+        await bucket.delete(dataset.fileId);
+      } catch (err) {
+        console.error('Error deleting file from GridFS:', err);
+      }
     }
 
     // Delete the dataset document
