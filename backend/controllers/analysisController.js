@@ -1,5 +1,6 @@
 const axios = require('axios');
 const Dataset = require('../models/Dataset');
+const mongoose = require('mongoose');
 const fs = require('fs');
 
 const PYTHON_SERVICE_URL = process.env.PYTHON_SERVICE_URL || 'http://localhost:5001';
@@ -37,15 +38,33 @@ const getBasicStats = async (req, res) => {
       });
     }
 
-    // Read file content instead of sending path
-    let fileContent;
+    // Check if the file exists in GridFS
+    if (!dataset.fileId) {
+      return res.status(404).json({
+        success: false,
+        message: 'Dataset file is no longer available (legacy storage). Please re-upload the dataset.'
+      });
+    }
+
+    // Read file content from GridFS
+    let fileContent = '';
     try {
-      fileContent = fs.readFileSync(dataset.filePath, 'utf8');
+      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+        bucketName: 'datasets'
+      });
+      const downloadStream = bucket.openDownloadStream(dataset.fileId);
+      
+      fileContent = await new Promise((resolve, reject) => {
+        let data = '';
+        downloadStream.on('data', chunk => { data += chunk.toString('utf8'); });
+        downloadStream.on('error', reject);
+        downloadStream.on('end', () => resolve(data));
+      });
     } catch (fileError) {
-      console.error('File read error:', fileError);
+      console.error('File read error (GridFS):', fileError);
       return res.status(500).json({
         success: false,
-        message: 'Error reading dataset file'
+        message: 'Error reading dataset file from database'
       });
     }
 
@@ -140,15 +159,33 @@ const getCorrelation = async (req, res) => {
       });
     }
 
-    // Read file content instead of sending path
-    let fileContent;
+    // Check if the file exists in GridFS
+    if (!dataset.fileId) {
+      return res.status(404).json({
+        success: false,
+        message: 'Dataset file is no longer available (legacy storage). Please re-upload the dataset.'
+      });
+    }
+
+    // Read file content from GridFS
+    let fileContent = '';
     try {
-      fileContent = fs.readFileSync(dataset.filePath, 'utf8');
+      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+        bucketName: 'datasets'
+      });
+      const downloadStream = bucket.openDownloadStream(dataset.fileId);
+      
+      fileContent = await new Promise((resolve, reject) => {
+        let data = '';
+        downloadStream.on('data', chunk => { data += chunk.toString('utf8'); });
+        downloadStream.on('error', reject);
+        downloadStream.on('end', () => resolve(data));
+      });
     } catch (fileError) {
-      console.error('File read error:', fileError);
+      console.error('File read error (GridFS):', fileError);
       return res.status(500).json({
         success: false,
-        message: 'Error reading dataset file'
+        message: 'Error reading dataset file from database'
       });
     }
 
@@ -241,15 +278,33 @@ const getDifferentialAnalysis = async (req, res) => {
       });
     }
 
-    // Read file content instead of sending path
-    let fileContent;
+    // Check if the file exists in GridFS
+    if (!dataset.fileId) {
+      return res.status(404).json({
+        success: false,
+        message: 'Dataset file is no longer available (legacy storage). Please re-upload the dataset.'
+      });
+    }
+
+    // Read file content from GridFS
+    let fileContent = '';
     try {
-      fileContent = fs.readFileSync(dataset.filePath, 'utf8');
+      const bucket = new mongoose.mongo.GridFSBucket(mongoose.connection.db, {
+        bucketName: 'datasets'
+      });
+      const downloadStream = bucket.openDownloadStream(dataset.fileId);
+      
+      fileContent = await new Promise((resolve, reject) => {
+        let data = '';
+        downloadStream.on('data', chunk => { data += chunk.toString('utf8'); });
+        downloadStream.on('error', reject);
+        downloadStream.on('end', () => resolve(data));
+      });
     } catch (fileError) {
-      console.error('File read error:', fileError);
+      console.error('File read error (GridFS):', fileError);
       return res.status(500).json({
         success: false,
-        message: 'Error reading dataset file'
+        message: 'Error reading dataset file from database'
       });
     }
 
