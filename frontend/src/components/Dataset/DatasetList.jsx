@@ -64,7 +64,7 @@ const DatasetList = ({ user, searchTerm, filterType, onDatasetSelect }) => {
     const isOwner = dataset.uploadedBy._id === user._id
 
     return (
-      <div className="card hover:shadow-md transition-shadow">
+      <div className={`card hover:shadow-md transition-all relative ${showMenu ? 'z-50' : 'z-10 hover:z-40'}`}>
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between">
           <div className="flex-1 min-w-0 mb-3 sm:mb-0">
             <div className="flex items-center space-x-2 sm:space-x-3 mb-2">
@@ -139,7 +139,7 @@ const DatasetList = ({ user, searchTerm, filterType, onDatasetSelect }) => {
                     className="fixed inset-0 z-10"
                     onClick={() => setShowMenu(false)}
                   />
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
+                  <div className="absolute right-0 mt-2 w-48 bg-white/90 backdrop-blur-xl rounded-xl shadow-[0_8px_30px_rgba(0,0,0,0.12)] border border-slate-200/60 py-1 z-20 overflow-hidden text-slate-700">
                     <button
                       onClick={() => {
                         onDatasetSelect(dataset)

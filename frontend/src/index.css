@@ -1,79 +1,117 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   html {
-    font-family: 'Inter', system-ui, sans-serif;
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     scroll-behavior: smooth;
   }
   
   body {
-    @apply bg-gray-50 text-gray-900;
+    @apply text-slate-800 overflow-x-hidden;
+    /* Beautiful Peach Mesh Gradient Background mimicking Image 2 */
+    background-color: #f7ede2;
+    background-image: 
+      radial-gradient(at 0% 0%, hsla(28, 60%, 95%, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 0%, hsla(11, 40%, 93%, 1) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, hsla(38, 50%, 92%, 1) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, hsla(28, 55%, 90%, 1) 0px, transparent 50%);
+    background-attachment: fixed;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Better touch targets for mobile */
   button, a, input, select, textarea {
-    @apply focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2;
+    @apply focus:outline-none focus:ring-2 focus:ring-primary-400/50 focus:ring-offset-2 transition-all;
     min-height: 44px; /* iOS minimum touch target */
   }
 
   input, select, textarea {
-    @apply text-base; /* Prevent zoom on iOS */
+    @apply text-base;
   }
 }
 
 @layer components {
+  /* The main app floating window */
+  .glass-app-container {
+    @apply bg-white/30 backdrop-blur-[40px] border border-white/50 shadow-[0_24px_64px_rgba(0,0,0,0.1)];
+  }
+
+  /* Extremely subtle, flat white glass cards (stats cards, lists) */
+  .glass-card {
+    @apply bg-white/40 backdrop-blur-2xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.05)] rounded-2xl transition-all duration-300;
+  }
+  
+  .glass-card:hover {
+    @apply bg-white/50 shadow-[0_12px_40px_rgba(0,0,0,0.08)] -translate-y-[2px];
+  }
+
+  /* High contrast dark cards (like 'Upcoming Meeting') */
+  .dark-card {
+    @apply bg-gradient-to-br from-[#1E1E1E] to-[#2D2D2D] backdrop-blur-xl border border-white/10 shadow-[0_16px_40px_rgba(0,0,0,0.15)] rounded-2xl text-white relative overflow-hidden;
+  }
+  .dark-card::after {
+    content: '';
+    @apply absolute top-0 right-0 w-64 h-64 bg-orange-500/20 rounded-full blur-[60px] pointer-events-none;
+    transform: translate(30%, -30%);
+  }
+
+  /* Inputs purely flat with subtle bg */
+  .glass-input {
+    @apply bg-slate-50/50 backdrop-blur-sm border border-slate-200/60 text-slate-800 placeholder-slate-400 focus:bg-white focus:border-slate-300 focus:shadow-[0_0_0_4px_rgba(249,115,22,0.1)] rounded-xl px-4 py-3 outline-none transition-all w-full;
+  }
+
+  /* Button updates: muted earth/slate or orange tones as primary */
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 active:bg-primary-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-slate-900 hover:bg-slate-800 text-white font-medium py-2.5 px-5 rounded-xl shadow-[0_6px_20px_rgba(15,23,42,0.15)] hover:shadow-[0_8px_25px_rgba(15,23,42,0.2)] hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-900 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed border border-slate-700;
   }
   
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 active:bg-gray-400 text-gray-800 font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-medium py-2.5 px-5 rounded-xl shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
   }
   
   .btn-danger {
-    @apply bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-medium py-2.5 px-4 rounded-lg transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+    @apply bg-rose-500 hover:bg-rose-600 text-white font-medium py-2.5 px-5 rounded-xl shadow-[0_4px_14px_rgba(225,29,72,0.3)] hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed border border-rose-400;
   }
   
   .input-field {
-    @apply w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200 text-base bg-white;
+    @apply glass-input;
   }
   
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6;
+    @apply glass-card p-5 sm:p-7;
   }
   
+  /* Sidebar items EXACTLY like reference: grey out default, active is a pill */
   .sidebar-item {
-    @apply flex items-center px-3 py-2.5 sm:px-4 sm:py-3 text-gray-700 hover:bg-gray-100 hover:text-primary-600 rounded-lg transition-colors duration-200 text-sm sm:text-base;
+    @apply flex items-center px-4 py-3 text-slate-500 hover:text-slate-800 rounded-full transition-all duration-200 text-[15px] font-medium w-full;
   }
   
   .sidebar-item.active {
-    @apply bg-primary-50 text-primary-600 border-r-2 border-primary-600;
+    @apply bg-white text-slate-900 shadow-[0_2px_10px_rgba(0,0,0,0.03)];
   }
 
   /* Mobile-specific improvements */
   @media (max-width: 640px) {
     .card {
-      @apply p-3;
+      @apply p-4;
     }
-    
     .btn-primary, .btn-secondary, .btn-danger {
-      @apply py-3 px-4 text-base font-medium;
+      @apply py-3 px-4 text-sm font-semibold;
     }
-    
     .input-field {
-      @apply py-3 text-base;
+      @apply py-3 text-sm;
     }
   }
 }
 
-/* Custom scrollbar - lighter on mobile */
+/* Custom scrollbar */
 ::-webkit-scrollbar {
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
 }
 
 @media (min-width: 640px) {
@@ -84,23 +122,22 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
+  background: #cbd5e1;
+  border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a1a1a1;
+  background: #94a3b8;
 }
 
 /* Loading spinner */
 .spinner {
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #3b82f6;
+  border: 2px solid #e2e8f0;
+  border-top: 2px solid #0f172a;
   border-radius: 50%;
   width: 16px;
   height: 16px;
@@ -140,12 +177,12 @@
 
 /* File upload drag and drop - mobile friendly */
 .drag-drop-zone {
-  @apply border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-8 text-center hover:border-primary-400 transition-colors duration-200;
-  min-height: 120px;
+  @apply border-2 border-dashed border-slate-300 bg-white/40 rounded-2xl p-6 sm:p-10 text-center hover:border-slate-400 hover:bg-white/60 transition-all duration-300 shadow-sm;
+  min-height: 140px;
 }
 
 .drag-drop-zone.dragover {
-  @apply border-primary-500 bg-primary-50;
+  @apply border-slate-600 bg-slate-50/80 scale-[1.02] shadow-md;
 }
 
 /* Touch-friendly tables */
@@ -153,31 +190,28 @@
   table {
     font-size: 14px;
   }
-  
   th, td {
-    padding: 8px 4px;
+    padding: 10px 6px;
   }
 }
 
 /* Better form spacing on mobile */
 @media (max-width: 640px) {
   .space-y-6 > * + * {
-    margin-top: 1rem;
+    margin-top: 1.25rem;
   }
-  
   .space-y-4 > * + * {
-    margin-top: 0.75rem;
+    margin-top: 1rem;
   }
 }
 
 /* Hide scrollbars on mobile for better UX */
 @media (max-width: 640px) {
   .overflow-x-auto::-webkit-scrollbar {
-    height: 2px;
+    height: 3px;
   }
-  
   .overflow-y-auto::-webkit-scrollbar {
-    width: 2px;
+    width: 3px;
   }
 }
 
@@ -186,7 +220,6 @@
   .safe-area-inset-top {
     padding-top: max(1rem, env(safe-area-inset-top));
   }
-  
   .safe-area-inset-bottom {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }

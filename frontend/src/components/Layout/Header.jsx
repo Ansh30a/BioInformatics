@@ -1,49 +1,52 @@
 import React, { useState } from 'react'
-import { User, LogOut, Settings, Menu, X } from 'lucide-react'
+import { User, LogOut, Settings, Menu, X, ChevronDown } from 'lucide-react'
 
 const Header = ({ user, onLogout, onMenuToggle, isMobileMenuOpen }) => {
   const [showDropdown, setShowDropdown] = useState(false)
 
+  // Use pathname to determine title accurately
+  const path = window.location.pathname
+  let title = "Dashboard"
+  if (path.includes('datasets')) title = "Datasets"
+  if (path.includes('analysis')) title = "Analysis"
+  if (path.includes('profile')) title = "Profile Settings"
+
   return (
-    <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-40">
+    <header className="bg-transparent px-2 sm:px-6 pt-6 pb-2 sm:pt-10 sm:pb-4 z-40 w-full">
       <div className="flex items-center justify-between">
-        {/* Mobile Menu Button + Logo */}
-        <div className="flex items-center space-x-3">
+        {/* Mobile Menu Button + Title */}
+        <div className="flex items-center space-x-4">
           <button
             onClick={onMenuToggle}
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="lg:hidden p-2.5 rounded-xl text-slate-600 hover:bg-slate-200 transition-colors shadow-sm bg-white/50"
           >
             {isMobileMenuOpen ? (
-              <X className="w-5 h-5 text-gray-600" />
+              <X className="w-5 h-5" />
             ) : (
-              <Menu className="w-5 h-5 text-gray-600" />
+              <Menu className="w-5 h-5" />
             )}
           </button>
           
-          <div className="flex-1 lg:flex-none">
-            <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
-              Bioinformatics Platform
-            </h1>
-            <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">
-              Data Management & Visualization
-            </p>
-          </div>
+          <h1 className="text-2xl sm:text-3xl lg:text-[40px] font-bold text-slate-800 tracking-tight ml-2">
+            {title}
+          </h1>
         </div>
         
-        {/* User Menu */}
+        {/* User Menu - matches image exactly */}
         <div className="relative">
           <button
             onClick={() => setShowDropdown(!showDropdown)}
-            className="flex items-center space-x-2 sm:space-x-3 px-2 sm:px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="flex items-center space-x-3 px-2 py-1.5 sm:pl-2 sm:pr-4 sm:py-2 rounded-full bg-white hover:bg-slate-50 transition-colors shadow-sm border border-slate-100"
           >
-            <div className="w-6 h-6 sm:w-8 sm:h-8 bg-primary-500 rounded-full flex items-center justify-center text-white font-medium text-sm sm:text-base">
-              {user?.name?.charAt(0).toUpperCase()}
+            <div className="w-8 h-8 sm:w-10 sm:h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-600 font-bold overflow-hidden">
+              {/* Replace with an actual avatar image ideally, using initial for now */}
+              <img src={`https://ui-avatars.com/api/?name=${user?.name || 'U'}&background=FFEDD5&color=C2410C&bold=true`} alt="Avatar" className="w-full h-full object-cover" />
             </div>
-            <div className="text-left hidden sm:block">
-              <p className="text-sm font-medium text-gray-900 truncate max-w-32">
-                {user?.name}
-              </p>
-              <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+            <div className="hidden sm:flex items-center space-x-2">
+              <span className="text-[15px] font-semibold text-slate-800">
+                {user?.name?.split(' ')[0] || 'User'}
+              </span>
+              <ChevronDown className="w-4 h-4 text-slate-500" />
             </div>
           </button>
 
@@ -53,42 +56,44 @@ const Header = ({ user, onLogout, onMenuToggle, isMobileMenuOpen }) => {
                 className="fixed inset-0 z-10"
                 onClick={() => setShowDropdown(false)}
               />
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
-                <div className="px-4 py-2 border-b border-gray-100 sm:hidden">
-                  <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+              <div className="absolute right-0 mt-3 w-56 glass-card py-2 z-20 shadow-[0_10px_40px_rgba(0,0,0,0.08)] animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className="px-4 py-3 border-b border-slate-100 sm:hidden">
+                  <p className="text-sm font-semibold text-slate-800">{user?.name}</p>
+                  <p className="text-xs text-slate-500 font-medium">{user?.email}</p>
                 </div>
                 
-                <div className="hidden sm:block px-4 py-2 border-b border-gray-100">
-                  <p className="text-sm font-medium text-gray-900">{user?.name}</p>
-                  <p className="text-xs text-gray-500">{user?.email}</p>
+                <div className="hidden sm:block px-4 py-3 border-b border-slate-100">
+                  <p className="text-sm font-semibold text-slate-800">{user?.name}</p>
+                  <p className="text-xs text-slate-500 font-medium">{user?.email}</p>
                 </div>
                 
-                <a
-                  href="/profile"
-                  className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setShowDropdown(false)}
-                >
-                  <User className="w-4 h-4" />
-                  <span>Profile</span>
-                </a>
+                <div className="py-1">
+                  <a
+                    href="/profile"
+                    className="flex items-center space-x-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-orange-600 transition-colors mx-1 rounded-lg"
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <User className="w-4 h-4" />
+                    <span>Profile</span>
+                  </a>
+                  
+                  <a
+                    href="/settings"
+                    className="flex items-center space-x-3 px-4 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-orange-600 transition-colors mx-1 rounded-lg"
+                    onClick={() => setShowDropdown(false)}
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span>Settings</span>
+                  </a>
+                </div>
                 
-                <a
-                  href="/settings"
-                  className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  onClick={() => setShowDropdown(false)}
-                >
-                  <Settings className="w-4 h-4" />
-                  <span>Settings</span>
-                </a>
-                
-                <div className="border-t border-gray-100">
+                <div className="border-t border-slate-100 py-1">
                   <button
                     onClick={() => {
                       setShowDropdown(false)
                       onLogout()
                     }}
-                    className="flex items-center space-x-2 w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                    className="flex items-center space-x-3 w-[calc(100%-8px)] mx-1 px-4 py-2.5 text-sm font-medium text-rose-600 hover:bg-rose-50 hover:text-rose-700 transition-colors rounded-lg"
                   >
                     <LogOut className="w-4 h-4" />
                     <span>Sign out</span>
