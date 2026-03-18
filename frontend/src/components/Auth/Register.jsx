@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Dna } from 'lucide-react'
 import toast from 'react-hot-toast'
 import api from '../../services/api'
 import { setToken } from '../../utils/auth'
@@ -56,11 +56,11 @@ const Register = ({ onLogin }) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8 bg-gray-50">
-      <div className="max-w-md w-full space-y-6 sm:space-y-8">
+    <div className="glass-app-container min-h-screen flex items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-6 sm:space-y-8 relative z-10">
         <div className="text-center">
-          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-primary-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl sm:text-3xl font-bold text-white">🧬</span>
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-primary-50 border border-primary-200 shadow-[0_0_20px_rgba(99,102,241,0.2)] rounded-full flex items-center justify-center mx-auto mb-4">
+            <Dna className="w-8 h-8 sm:w-10 sm:h-10 text-primary-600" />
           </div>
           <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900">
             Create your account
@@ -70,7 +70,7 @@ const Register = ({ onLogin }) => {
           </p>
         </div>
 
-        <div className="bg-white py-6 px-4 sm:py-8 sm:px-6 shadow rounded-lg border border-gray-200">
+        <div className="glass-card py-6 px-4 sm:py-8 sm:px-6 shadow-[0_8px_30px_rgba(0,0,0,0.04)] ring-1 ring-slate-100">
           <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
               <div>
@@ -84,7 +84,7 @@ const Register = ({ onLogin }) => {
                   required
                   value={formData.name}
                   onChange={handleChange}
-                  className="input-field"
+                  className="glass-input w-full"
                   placeholder="Enter your full name"
                 />
               </div>
@@ -101,7 +101,7 @@ const Register = ({ onLogin }) => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="input-field"
+                  className="glass-input w-full"
                   placeholder="Enter your email address"
                 />
               </div>
@@ -116,7 +116,7 @@ const Register = ({ onLogin }) => {
                   type="text"
                   value={formData.institution}
                   onChange={handleChange}
-                  className="input-field"
+                  className="glass-input w-full"
                   placeholder="Your university or research institution"
                 />
               </div>
@@ -131,7 +131,7 @@ const Register = ({ onLogin }) => {
                   type="text"
                   value={formData.researchArea}
                   onChange={handleChange}
-                  className="input-field"
+                  className="glass-input w-full"
                   placeholder="e.g., Genomics, Proteomics, Bioinformatics"
                 />
               </div>
@@ -148,7 +148,7 @@ const Register = ({ onLogin }) => {
                     required
                     value={formData.password}
                     onChange={handleChange}
-                    className="input-field pr-10"
+                    className="glass-input w-full pr-10"
                     placeholder="Create a password (min. 6 characters)"
                   />
                   <button
@@ -176,7 +176,7 @@ const Register = ({ onLogin }) => {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="input-field"
+                  className="glass-input w-full"
                   placeholder="Confirm your password"
                 />
               </div>

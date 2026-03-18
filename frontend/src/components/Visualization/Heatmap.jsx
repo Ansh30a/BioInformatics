@@ -70,18 +70,23 @@ const Heatmap = ({ data, isCorrelation = false }) => {
   }
 
   const getColor = (value, isCorr = false) => {
-    if (isNaN(value)) return 'rgb(240, 240, 240)'
+    if (isNaN(value)) return 'rgba(255, 255, 255, 0.2)'
     
     if (isCorr) {
-      // Correlation: -1 to 1, blue (negative) to red (positive)
-      const normalized = (value + 1) / 2 // Convert -1,1 to 0,1
-      const red = Math.round(255 * normalized)
-      const blue = Math.round(255 * (1 - normalized))
-      return `rgb(${red}, 100, ${blue})`
+      // Correlation: -1 to 1 (Indigo to Orange)
+      const normalized = (value + 1) / 2 // 0 to 1
+      if (normalized < 0.5) {
+        // -1 to 0 (Indigo 500: 99, 102, 241)
+        const intensity = 1 - (normalized * 2) 
+        return `rgba(99, 102, 241, ${0.1 + (0.8 * intensity)})`
+      } else {
+        // 0 to 1 (Orange 500: 249, 115, 22)
+        const intensity = (normalized - 0.5) * 2
+        return `rgba(249, 115, 22, ${0.1 + (0.8 * intensity)})`
+      }
     } else {
-      // Regular data: 0 to 1, white to blue
-      const intensity = Math.round(255 * (1 - value))
-      return `rgb(${intensity}, ${intensity}, 255)`
+      // Regular data: 0 to 1 (Orange gradient)
+      return `rgba(249, 115, 22, ${0.1 + (0.8 * value)})`
     }
   }
 
@@ -122,7 +127,11 @@ const Heatmap = ({ data, isCorrelation = false }) => {
         <div className="flex items-center space-x-4">
           <div className="flex items-center space-x-2 text-sm text-slate-700">
             <span>Low</span>
-            <div className="w-20 h-4 bg-gradient-to-r from-slate-100 to-blue-600 rounded border border-slate-200"></div>
+            <div className={`w-20 h-4 rounded border border-slate-200 ${
+              isCorrelation 
+                ? 'bg-gradient-to-r from-indigo-500 via-slate-100 to-orange-500' 
+                : 'bg-gradient-to-r from-slate-100 to-orange-500'
+            }`}></div>
             <span>High</span>
           </div>
         </div>
@@ -158,8 +167,11 @@ const Heatmap = ({ data, isCorrelation = false }) => {
                   {row.map((value, colIndex) => (
                     <td
                       key={colIndex}
-                      className="w-8 h-6 border border-slate-200 cursor-pointer hover:border-white/30"
-                      style={{ backgroundColor: getColor(value, isCorrelation) }}
+                      className="w-8 h-6 border border-white/20 cursor-pointer hover:border-white/60 transition-colors relative z-10"
+                      style={{ 
+                        backgroundColor: getColor(value, isCorrelation),
+                        backdropFilter: 'blur(4px)'
+                      }}
                       title={getCellTitle(value, rowIndex, colIndex)}
                     >
                     </td>
